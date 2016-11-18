@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
+import javax.naming.Context;
 import org.json.*;
 
 public class JMXDiscovery {
@@ -63,6 +64,16 @@ public class JMXDiscovery {
 	protected String discoverMBeans(String key) throws Exception
 	{
 		try {
+                       
+			Hashtable env = new Hashtable();
+			if (null != username && null != password)
+			{
+				env.put(Context.SECURITY_PRINCIPAL, username);
+				env.put(Context.SECURITY_CREDENTIALS, password);
+			}
+			if (key.contains("weblogic"))
+				env.put(JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES, "weblogic.management.remote");
+			
 			HashMap<String, String[]> env = null;
 			if (null != username && null != password)
 			{

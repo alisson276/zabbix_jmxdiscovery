@@ -30,7 +30,7 @@
 
     <target name="compile" description="Compile the java file" depends="init">
         <mkdir dir="${dir.compile}"/>
-        <javac srcdir="${dir.src}" destdir="${dir.compile}" classpathref="classpath" includeantruntime="false"/>
+        <javac source="1.6" target="1.6" srcdir="${dir.src}" destdir="${dir.compile}" classpathref="classpath" includeantruntime="false"/>
     </target>
 
     <target name="jar" description="Create the jar file" depends="compile">
