@@ -36,9 +36,16 @@ public class JMXDiscovery {
 	private String username, password;
 
 	public JMXDiscovery(String hostname, int port, String usr, String pwd) {
+		String serviceURL = null;
+		if (hostname.startsWith("service:")) {
+			serviceURL = hostname;
+		}
+		else {
+			serviceURL = "service:jmx:rmi:///jndi/rmi://" + hostname + ":" + port + "/jmxrmi";
+		}
 		try
 		{
-			this.jmxServerUrl = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://" + hostname + ":" + port + "/jmxrmi");
+			this.jmxServerUrl = new JMXServiceURL(serviceURL);
 			jmxc = null;
 			mbsc = null;
 			username = usr;
@@ -70,7 +77,7 @@ public class JMXDiscovery {
 			JSONArray beanList = new JSONArray();
 			JSONObject mapping = new JSONObject();
 
-			Set beans = mbsc.queryMBeans(filter, null);
+			Set<ObjectInstance> beans = mbsc.queryMBeans(filter, null);
 			for (Object obj : beans) {
 				JSONObject bean = new JSONObject();
 				ObjectName beanName;

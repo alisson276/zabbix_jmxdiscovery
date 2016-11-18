@@ -16,25 +16,31 @@ limitations under the License.
 
 package com.riotgames.mondev;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Main {
 
     public static void main(String[] args) {
+    	Logger.getLogger("org.jboss").setLevel(Level.OFF);
+    	Logger.getLogger("org.xnio").setLevel(Level.OFF);
 		JMXDiscovery jmx;
 		String pattern, host, usr, pwd;
 		int port = 9001;
 		pattern = host = usr = pwd = null;
 
-		if (args.length == 2 || args.length == 4) {
+		if (args.length == 2 || args.length == 4 || args.length == 5) {
 			pattern = args[0];
 
-			if (args[1].contains(":")) {
+			if (args[1].startsWith("service:") || !args[1].contains(":")) {
+				host = args[1];
+			} else {
 				String[] parts = args[1].split(":");
 				host = parts[0];
 				port = Integer.parseInt(parts[1]);
-			} else
-				host = args[1];
+			}
 
-            if (args.length == 4) {
+            if (args.length >= 4) {
 				usr = args[2];
 				pwd = args[3];
 			}
