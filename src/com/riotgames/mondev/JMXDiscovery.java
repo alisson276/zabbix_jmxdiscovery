@@ -25,9 +25,9 @@ import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 import java.util.HashMap;
 import java.util.Hashtable;
+import javax.naming.Context;
 import java.util.Map;
 import java.util.Set;
-import javax.naming.Context;
 import org.json.*;
 
 public class JMXDiscovery {
@@ -64,23 +64,23 @@ public class JMXDiscovery {
 	protected String discoverMBeans(String key) throws Exception
 	{
 		try {
-                       
-			Hashtable env = new Hashtable();
+                        HashMap env = null;
 			if (null != username && null != password)
-			{
-				env.put(Context.SECURITY_PRINCIPAL, username);
-				env.put(Context.SECURITY_CREDENTIALS, password);
-			}
+                        {
+                                env = new HashMap<String, String[]>();
+                                env.put(JMXConnector.CREDENTIALS, new String[] {username, password});
+                        }
 			if (key.contains("weblogic"))
-				env.put(JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES, "weblogic.management.remote");
-			
-			HashMap<String, String[]> env = null;
-			if (null != username && null != password)
 			{
-				env = new HashMap<String, String[]>();
-				env.put(JMXConnector.CREDENTIALS, new String[] {username, password});
+				env = new HashMap<String, String>();
+			        if (null != username && null != password)
+			        {
+			        	env.put(Context.SECURITY_PRINCIPAL, username);
+			        	env.put(Context.SECURITY_CREDENTIALS, password);
+			        }
+				env.put(JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES, "weblogic.management.remote");
 			}
-
+ 
 			jmxc = JMXConnectorFactory.connect(jmxServerUrl, env);
 			mbsc = jmxc.getMBeanServerConnection();
 
