@@ -65,11 +65,6 @@ public class JMXDiscovery {
 	{
 		try {
                         HashMap env = null;
-			if (null != username && null != password)
-                        {
-                                env = new HashMap<String, String[]>();
-                                env.put(JMXConnector.CREDENTIALS, new String[] {username, password});
-                        }
 			if (key.contains("weblogic"))
 			{
 				env = new HashMap<String, String>();
@@ -80,6 +75,11 @@ public class JMXDiscovery {
 			        }
 				env.put(JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES, "weblogic.management.remote");
 			}
+			else if (null != username && null != password)
+                        {
+                                env = new HashMap<String, String[]>();
+                                env.put(JMXConnector.CREDENTIALS, new String[] {username, password});
+                        }
  
 			jmxc = JMXConnectorFactory.connect(jmxServerUrl, env);
 			mbsc = jmxc.getMBeanServerConnection();
