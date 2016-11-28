@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
- */
+*/
 
 package com.riotgames.mondev;
 
@@ -64,24 +64,27 @@ public class JMXDiscovery {
 	protected String discoverMBeans(String key) throws Exception
 	{
 		try {
-                        HashMap env = null;
 			if (key.contains("weblogic"))
 			{
-				env = new HashMap<String, String>();
-			        if (null != username && null != password)
-			        {
-			        	env.put(Context.SECURITY_PRINCIPAL, username);
-			        	env.put(Context.SECURITY_CREDENTIALS, password);
-			        }
-				env.put(JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES, "weblogic.management.remote");
+			    HashMap<String, String> env = new HashMap<String, String>();
+			    if (null != username && null != password)
+			    {
+			    	env.put(Context.SECURITY_PRINCIPAL, username);
+			    	env.put(Context.SECURITY_CREDENTIALS, password);
+			    }
+			    env.put(JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES, "weblogic.management.remote");
+			    jmxc = JMXConnectorFactory.connect(jmxServerUrl, env);
 			}
-			else if (null != username && null != password)
-                        {
-                                env = new HashMap<String, String[]>();
-                                env.put(JMXConnector.CREDENTIALS, new String[] {username, password});
-                        }
+			else
+			{
+                            HashMap<String, String[]> env = new HashMap<String, String[]>();
+			    if (null != username && null != password)
+                            {
+                                    env.put(JMXConnector.CREDENTIALS, new String[] {username, password});
+                            }
+			    jmxc = JMXConnectorFactory.connect(jmxServerUrl, env);
+			}
  
-			jmxc = JMXConnectorFactory.connect(jmxServerUrl, env);
 			mbsc = jmxc.getMBeanServerConnection();
 
 			ObjectName filter = new ObjectName(key);
